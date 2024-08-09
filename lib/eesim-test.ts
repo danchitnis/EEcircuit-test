@@ -38,7 +38,7 @@ export async function testEEsim(page: Page, url: string) {
     await page.getByRole('button', { name: 'Run' }).click();
 
     await page.waitForTimeout(1000);
-    //expect(consoleErrors.length).toBe(0);
+    expect(consoleErrors.length).toBe(0);
 
     await page.getByRole('tab', { name: 'Info' }).click();
 
