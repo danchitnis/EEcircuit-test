@@ -7,13 +7,35 @@ import { compareCSVFiles } from '../lib/compareCSV';
 export async function testEEsim(page: Page, url: string) {
     const consoleErrors: string[] = [];
 
+    let isSimCompleted: boolean = false;
+
     // Listen for console errors
     page.on('console', (msg: any) => {
         if (msg.type() === 'error') {
             consoleErrors.push(msg.text());
             console.log('Error:', msg.text());
         }
+
+        if (msg.text().startsWith('Simulation run completed')) {
+            isSimCompleted = true;
+
+        };
     });
+
+    // Function to wait for the simulation to complete
+    function waitForSimCompletion(): Promise<void> {
+        return new Promise((resolve) => {
+            const checkCompletion = () => {
+                if (isSimCompleted) {
+                    resolve();
+                } else {
+                    // Re-check after the next console message or event loop tick
+                    page.once('console', checkCompletion);
+                }
+            };
+            checkCompletion();
+        });
+    }
 
 
     await page.goto(url);
@@ -21,10 +43,6 @@ export async function testEEsim(page: Page, url: string) {
     await expect(page).toHaveTitle(/EEsim/);
 
     await page.getByRole('button', { name: 'Run' }).click();
-
-
-    await page.waitForTimeout(1000);
-    //expect(consoleErrors.length).toBe(0);
 
     await page.getByRole('button', { name: 'De-select all' }).click();
     await page.getByRole('button', { name: 'Select all', exact: true }).click();
@@ -42,7 +60,8 @@ export async function testEEsim(page: Page, url: string) {
 
     await page.getByRole('tab', { name: 'Info' }).click();
 
-    await page.waitForTimeout(1000);
+    // Wait for simulation to complete without using a timeout
+    await waitForSimCompletion();
 
     const text = await page.getByLabel('info', { exact: true }).inputValue();
 
