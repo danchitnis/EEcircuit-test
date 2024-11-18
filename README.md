@@ -1,3 +1,3 @@
-# EEsim-test
+# EEcircuit-test
 
-UI test for [EEsim.dev](https://eesim.dev) using playwright
+UI test for [EEcircuit.com](https://eecircuit.com) using playwright
