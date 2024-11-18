@@ -8,11 +8,11 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@playwright/test": "^1.46.0",
-    "@types/node": "^22.1.0"
+    "@playwright/test": "^1.49.0",
+    "@types/node": "^22.9.0"
   },
   "dependencies": {
     "csv-parser": "^3.0.0",
-    "simple-git": "^3.25.0"
+    "simple-git": "^3.27.0"
   }
 }
